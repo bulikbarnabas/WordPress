@@ -14,7 +14,7 @@ sudo apt-get install -y ansible git
 
 #### script indítás:
 
-sudo ansible-pull -U https://github.com/englert/ansible.git
+sudo ansible-pull -U https://github.com/bulikbarnabas/WordPress_ansible
 
 ## script tesztelés lokálisan:
 ## ansible-playbook  local.yml
