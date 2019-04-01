@@ -15,8 +15,8 @@
         state: restarted
 
   tasks:
-    - include: tasks/worldpress.yml
-    - include: tasks/lamp-server.yml
+    - include: worldpress.yml
+    - include: lamp-server.yml
 
     
 alfa:1.0a
