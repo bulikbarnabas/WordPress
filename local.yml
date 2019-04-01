@@ -1,0 +1,22 @@
+- hosts: localhost
+  become: true
+  pre_tasks:
+    - name: WorldPress
+      apt: update_cache=yes
+      changed_when: False
+      
+    - name: create ansible user
+      user: name=ansible uid=900 
+
+  handlers:
+    - name: restart_sshd
+      service:
+        name: sshd
+        state: restarted
+
+  tasks:
+    - include: tasks/worldpress.yml
+    - include: tasks/lamp-server.yml
+
+    
+alfa:1.0a
