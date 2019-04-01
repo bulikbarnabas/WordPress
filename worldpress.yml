@@ -1,0 +1,50 @@
+---
+- name: Setup WordPress
+hosts: ubuntu
+become: yes
+become_method: sudo
+gather_facts: true
+tags: [database]
+vars:
+wordpress_file: "/home/{{ ansible_user }}/Downloads/wordpress-latest.zip"
+wordpress_dest: "/var/www/html"
+tasks:
+- name: Update the software package repository
+apt:
+update_cache: yes
+- name: Create a database for wordpress
+mysql_db:
+name: wordpress
+state: present
+- name: Create downloads directory
+file:
+path: "/home/{{ ansible_user }}/Downloads"
+state: directory
+- name: Create target directory
+file:
+path: "{{ wordpress_dest }}/wordpress"
+state: directory
+- name: Download latest wordpress
+get_url:
+url: https://wordpress.org/latest.zip
+dest: "{{ wordpress_file }}"
+- name: Extract to /var/www/html
+unarchive:
+src: "{{ wordpress_file }}"
+dest: "{{ wordpress_dest}}"
+remote_src: True
+- name: Copy wp-config-sample.php to wp-config.php
+command: cp "{{ wordpress_dest }}/wordpress/wp-config-sample.php" "{{ wordpress_dest }}/wordpress/wp-config.php"
+- name: Update database credentials in the file
+replace:
+dest: "{{ wordpress_dest }}/wordpress/wp-config.php"
+regexp: "{{ item.regexp }}"
+replace: "{{ item.replace }}"
+with_items:
+- { regexp: 'database_name_here', replace: 'wordpress' }
+- { regexp: 'username_here', replace: 'guest' }
+- { regexp: 'password_here', replace: 'osfy'}
+- name: Restart apache2 server
+service:
+name: apache2
+state: restarted
